@@ -7,6 +7,7 @@ import { addNewProject } from "../redux-toolkit/projectSlice";
 import { createSlug, formatDate } from "../utils/util";
 import PopupDialogModal from "../modal/PopupDialogModal";
 import SuccessFailure from "../modal/SuccessFailure";
+import { updateSelectedIndex } from "../redux-toolkit/selectedProjectIndex";
 
 export default function CreateNewProject() {
     // Initialize form using react-hook-form
@@ -47,6 +48,7 @@ export default function CreateNewProject() {
             // Dispatch action to add a new project
             const slug = createSlug(data.name)
             dispatch(addNewProject({ slug, ...data, tasks: [] }));
+
             dialogRef.current.setContent(
                 <SuccessFailure
                     message={'Project Added Successfully!'}
@@ -58,10 +60,11 @@ export default function CreateNewProject() {
 
 
     // Function to close the dialog modal
-    const closeDialogModal = (success = false, slug) => {
+    const closeDialogModal = (success, slug) => {
         dialogRef.current.close();
-        if (success) {
+        if (success == true) {
             navigate(`/project-info/${slug}`)
+            dispatch(updateSelectedIndex(0))
         }
     }
 
@@ -82,7 +85,7 @@ export default function CreateNewProject() {
             <PopupDialogModal ref={dialogRef} />
 
             {/* Form for creating a new project */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-wrapper gap-6" noValidate>
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-wrapper gap-6 pb-8" noValidate>
                 <div className="flex items-center self-end gap-8">
                     <Link to={'/'}>
                         <button className="styledButton">Cancel</button>

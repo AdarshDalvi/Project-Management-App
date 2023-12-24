@@ -1,11 +1,27 @@
 import { useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { useEffect } from "react"
+import { updateSelectedIndex } from "../redux-toolkit/selectedProjectIndex"
 
 export default function Home() {
+
+    const { selectedIndex } = useSelector(state => state.projectIndex)
+    const { projects } = useSelector(state => state.project)
+    const dispatch = useDispatch()
+
     const navigate = useNavigate()
     const navigateTo = () => {
         const link = '/new-project'
         navigate(link)
+        dispatch(updateSelectedIndex(null))
     }
+
+    useEffect(() => {
+        if (selectedIndex !== null) {
+            navigate(`/project-info/${projects[selectedIndex].slug}`);
+        }
+    }, [selectedIndex]);
+
     return (
         <div className="flex-container flex-1 justify-center items-center text-center">
             <img src="/logo.png" className="w-20" alt="create new project app-logo" />
